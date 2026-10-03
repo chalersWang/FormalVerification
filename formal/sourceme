@@ -1,0 +1,43 @@
+#!/bin/csh -f
+# ============================================================================
+# sourceme —— DT82S_Pro NPU formal 验证示例 环境配置
+#
+# 用法（csh/tcsh，需在工程根目录下执行）：
+#     cd <本工程目录>
+#     source sourceme
+#
+# 之后即可运行：
+#     make sim     VCS 仿真
+#     make vcf     Synopsys VC Formal (FPV)
+#     make jg      Cadence JasperGold (FPV)
+#
+# 依据：prj1/.../code/verification/it/npu_it/sourceme 与 code/bin/setup.csh
+#       的环境变量，裁剪为本 formal 示例（VCS + VC Formal + JasperGold）所需。
+# ============================================================================
+
+# ---- 1. 工具模块 ----
+module purge
+module load vcs/2023.12-C          # VCS     仿真
+module load verdi/2023.12-C        # Verdi   波形调试
+module load vc_static/2021.09      # VC Formal (vcf) —— 形式化验证
+module load jasper/2021.12p002-C   # JasperGold (jg) —— 形式化验证
+module load lic/synopsys-C         # Synopsys license (VCS/Verdi/VC Formal)
+module load lic/cadence-C          # Cadence   license (JasperGold)
+
+# ---- 2. 工程相关环境变量 ----
+setenv WORK_DIR           ${PWD}
+setenv PROJ_DIR           ${PWD}
+setenv TOOLS_PATH         /network/tools
+setenv VCS_ARCH_OVERRIDE  linux
+
+# ---- 3. 系统工具链（gcc，供 VCS/formal 链接及后续 cmodel 扩展）----
+setenv PATH            /network/tools/system/gcc/9.2.0/bin:$PATH
+setenv LD_LIBRARY_PATH /network/tools/system/gcc/9.2.0/lib:/network/tools/system/gcc/9.2.0/lib64:$LD_LIBRARY_PATH
+
+# ---- 4. 打印确认 ----
+echo "PROJ_DIR              = ${PROJ_DIR}"
+echo "VCS_HOME              = ${VCS_HOME}"
+echo "VERDI_HOME            = ${VERDI_HOME}"
+echo "VC_STATIC_HOME        = ${VC_STATIC_HOME}"
+echo "SNPSLMD_LICENSE_FILE  = ${SNPSLMD_LICENSE_FILE}"
+echo "CDS_LIC_FILE          = ${CDS_LIC_FILE}"
